@@ -329,12 +329,18 @@ def main() -> None:
             return
         try:
             submitted = _submit_record(config, record_id, token, brief_data)
+            notification_error = ""
             if submitted:
-                _send_notification(config, submitted)
+                try:
+                    _send_notification(config, submitted)
+                except Exception as exc:
+                    notification_error = str(exc)
         except Exception as exc:
             st.error(f"提交失败：{exc}")
         else:
             st.success("需求已提交，谢谢。")
+            if notification_error:
+                st.warning("邮件提醒发送失败，但需求已经提交成功。我们会在后台同步客户反馈。")
 
 
 if __name__ == "__main__":
