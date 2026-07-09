@@ -123,8 +123,10 @@ def _send_notification(config: dict[str, Any], record: dict[str, Any]) -> None:
             "请回到小快乐工作室点击“同步客户反馈”。",
         ])
     )
-    with smtplib.SMTP(config["smtp_host"], config["smtp_port"], timeout=20) as smtp:
-        smtp.starttls()
+    smtp_cls = smtplib.SMTP_SSL if config["smtp_port"] == 465 else smtplib.SMTP
+    with smtp_cls(config["smtp_host"], config["smtp_port"], timeout=20) as smtp:
+        if config["smtp_port"] != 465:
+            smtp.starttls()
         if config["smtp_username"] and config["smtp_password"]:
             smtp.login(config["smtp_username"], config["smtp_password"])
         smtp.send_message(msg)
