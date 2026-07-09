@@ -14,6 +14,8 @@ create table if not exists public.client_brief_submissions (
 
 alter table public.client_brief_submissions enable row level security;
 
+grant select, insert, update on table public.client_brief_submissions to service_role;
+
 drop function if exists public.get_public_brief_submission(uuid, text);
 create or replace function public.get_public_brief_submission(p_id uuid, p_access_token text)
 returns setof public.client_brief_submissions
